@@ -2,7 +2,7 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
+
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -29,13 +29,13 @@ struct LinkedList<T> {
     end: Option<NonNull<Node<T>>>,
 }
 
-impl<T> Default for LinkedList<T> {
+impl<T:std::cmp::PartialOrd +Clone> Default for LinkedList<T> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T> LinkedList<T> {
+impl<T :std::cmp::PartialOrd +Clone> LinkedList<T> {
     pub fn new() -> Self {
         Self {
             length: 0,
@@ -69,14 +69,51 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
+	pub fn merge(mut list_a:LinkedList<T>, mut list_b:LinkedList<T>) -> Self
 	{
 		//TODO
-		Self {
+	let mut merge_list=	Self {
             length: 0,
             start: None,
             end: None,
+        };
+        let len_1=list_a.length;
+        let len_2=list_b.length;
+        if len_1==0
+        {
+            return list_b
+        }else if len_2==0 {
+            return list_a
         }
+       
+        let mut a=0;
+        let mut b=0;
+       while a<len_1&&b<len_2{
+        let  val_1=list_a.get(a as i32).unwrap().clone();
+        let  val_2 =list_b.get(b as i32).unwrap().clone() ;
+        if val_1<=val_2{
+            merge_list.add(val_1);
+            a+=1;
+        }else {
+            merge_list.add(val_2);
+            b+=1;
+        }
+        if a==len_1{
+            while b<len_2{
+            let  val =list_b.get(b as i32).unwrap().clone() ;
+            merge_list.add(val);
+            b+=1;
+            }
+        }else if b==len_2{
+            while a<len_1{
+                let  val =list_a.get(a as i32).unwrap().clone() ;
+                merge_list.add(val);
+                a+=1;
+                }
+        }
+       }
+      
+       merge_list
 	}
 }
 

@@ -2,7 +2,7 @@
 	double linked list reverse
 	This problem requires you to reverse a doubly linked list
 */
-// I AM NOT DONE
+
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -31,13 +31,13 @@ struct LinkedList<T> {
     end: Option<NonNull<Node<T>>>,
 }
 
-impl<T> Default for LinkedList<T> {
+impl<T:Clone> Default for LinkedList<T> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T> LinkedList<T> {
+impl<T:Clone> LinkedList<T> {
     pub fn new() -> Self {
         Self {
             length: 0,
@@ -72,12 +72,40 @@ impl<T> LinkedList<T> {
             },
         }
     }
+    pub fn set(&mut self,value :T,index:i32)
+    {
+            let mut cur_index=0;
+            let mut cur_node = self.start;
+            while index!=cur_index
+            {
+                let next_node=unsafe {
+                    (*cur_node.unwrap().as_ptr()).next
+                };
+                cur_node=next_node;
+                cur_index +=1;
+            }
+            unsafe{
+                (*cur_node .unwrap().as_mut()).val=value;
+            }
+    }
 	pub fn reverse(&mut self){
 		// TODO
+        let mut ptr_1=0;
+        let mut ptr_2=self.length as i32 -1;
+        while ptr_1<ptr_2
+        {
+            let val_1=self.get(ptr_1).unwrap().clone();
+            let val_2=self.get(ptr_2).unwrap().clone();
+           self. set (val_2,ptr_1);
+            self .set(val_1,ptr_2);
+            ptr_1 +=1;
+            ptr_2 -=1;
+        }
+
 	}
 }
 
-impl<T> Display for LinkedList<T>
+impl<T:Clone> Display for LinkedList<T>
 where
     T: Display,
 {
@@ -89,7 +117,7 @@ where
     }
 }
 
-impl<T> Display for Node<T>
+impl<T:Clone> Display for Node<T>
 where
     T: Display,
 {
